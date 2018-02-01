@@ -2,6 +2,7 @@
 require(APPPATH.'libraries/REST_Controller.php');
 defined('BASEPATH') OR exit('No direct script access allowed'); 
 
+header('Content-type: application/json');
 date_default_timezone_set('Asia/Jakarta');
 
 class api extends REST_Controller {
@@ -43,28 +44,20 @@ class api extends REST_Controller {
             "Tahun" => $Tahun, "NoSK" => $NoSK, "JatuhTempo" => $JatuhTempo, "TanggalSekarang" => $TanggalSekarang,
             "Selisih" => $Selisih, "KodeRekening" => $KodeRekening, "Pokok" => $Pokok, "Denda" => $Denda,
             "Total" => $Total, "Lunas" => $Lunas, "Aktif" => $Aktif, "dataDouble" => $dataDouble);
-          // $Kode00 = array("IsError" => "False", "ResponseCode" => "00", "ErrorDesc" => "Sukses");
-          // $Kode10 = array("IsError" => "True", "ResponseCode" => "10", "ErrorDesc" => "Data tagihan tidak ditemukan");
-          // $Kode13 = array("IsError" => "True", "ResponseCode" => "13", "ErrorDesc" => "Data tagihan telah lunas");
-          // $Kode14 = array("IsError" => "True", "ResponseCode" => "14", "ErrorDesc" => "Jumlah tagihan yang dibayarkan tidak sesuai");
-          // $Kode34 = array("IsError" => "True", "ResponseCode" => "34", "ErrorDesc" => "Data reversal tidak ditemukan");
-          // $Kode36 = array("IsError" => "True", "ResponseCode" => "36", "ErrorDesc" => "Data reversal telah dibatalkan");
-          // $Kode99 = array("IsError" => "True", "ResponseCode" => "99", "ErrorDesc" => "System Error");
         }
           if (!isset($Hasil))
           {
-            $Kode10 = array("IsError" => "True", "ResponseCode" => "10", "ErrorDesc" => "Data tagihan tidak ditemukan");
-            $Data = array("Data" => "Kosong", "Status" => $Kode10);
-          } elseif($Lunas == 1)
-          {
-            $Kode13 = array("IsError" => "True", "ResponseCode" => "13", "ErrorDesc" => "Data tagihan telah lunas");
-            $Data = array("Data" => $Hasil, "Status" => $Kode13);
+            $Data = array("Data" => "Kosong", "Status" => array("IsError:" => "True", 
+                            "ResponseCode" => "10", "ErrorDesc" => "Data tagihan tidak ditemukan"));
+          // } elseif($Lunas == 1)
+          // {
+            // $Data = array("Data" => $Hasil, "Status" => array("IsError:" => "True",
+                            // "ResponseCode" => "13", "ErrorDesc" => "Data tagihan telah lunas"));
           } else
           {
-            $Kode00 = array("IsError" => "False", "ResponseCode" => "00", "ErrorDesc" => "Sukses");
-            $Data = array("Data" => $Hasil, "Status" => $Kode00);
+            $Data = array("Data" => $Hasil, "Status" => array("IsError:" => "True", 
+                            "ResponseCode" => "00", "ErrorDesc" => "Sukses"));
           }
-          header('Content-type: application/json');
           // echo "<pre>";
           // die(print_r($Data,FALSE));
           echo json_encode($Data);
@@ -72,48 +65,62 @@ class api extends REST_Controller {
   }
   function payment_post()
   {
-    $NOP = $this->get('NOP');
-      $query = $this->db->get_where('inquiry', array('NOP' => $NOP));
-        foreach ($query->result_array() as $Inquiry)
-        {
-          $NOP = $Inquiry['NOP'];
-          $Nama = $Inquiry['Nama'];
-          $Alamat = $Inquiry['Alamat'];
-          $Masa = $Inquiry['Masa'];
-          $Tahun = $Inquiry['Tahun'];
-          $NoSK = $Inquiry['NoSK'];
-          $JatuhTempo = $Inquiry['JatuhTempo'];
-          $TanggalSekarang = $Inquiry['TanggalSekarang'];
-          $Selisih = $Inquiry['Selisih'];
-          $KodeRekening = $Inquiry['KodeRekening'];
-          $Pokok = $Inquiry['Pokok'];
-          $Denda = $Inquiry['Denda'];
-          $Total = $Inquiry['Total'];
-          $Lunas = $Inquiry['Lunas'];
-          $Aktif = $Inquiry['Aktif'];
-          $dataDouble = $Inquiry['dataDouble'];
-          $Hasil = array("NOP" => $NOP, "Nama" => $Nama, "Alamat" => $Alamat, "Masa" => $Masa,
-            "Tahun" => $Tahun, "NoSK" => $NoSK, "JatuhTempo" => $JatuhTempo, "TanggalSekarang" => $TanggalSekarang,
-            "Selisih" => $Selisih, "KodeRekening" => $KodeRekening, "Pokok" => $Pokok, "Denda" => $Denda,
-            "Total" => $Total, "Lunas" => $Lunas, "Aktif" => $Aktif, "dataDouble" => $dataDouble);
-        }
-    $hasilPayment = array(
+    $HasilPayment = array(
         'NOP' => $this->post('NOP'),
         'Masa' => $this->post('Masa'),
         'Tahun' => $this->post('Tahun'),
-        // 'JatuhTempo' => $this->post('JatuhTempo'),
-        // 'KodeRek' => $this->post('KodeRek'),
         'Pokok' => $this->post('Pokok'),
         'Denda' => $this->post('Denda'),
         'Total' => $this->post('Total')
-        // 'Pengesahan' => $this->post('Pengesahan')
     );
-    
-    $queryPayment = $this->db->insert('payment',$hasilPayment);
-    header('Content-type: application/json');
-    // echo "<pre>";
-    // print_r ($hasilPayment);
-    echo json_encode($queryPayment);
+
+    $query = $this->db->get_where('inquiry', array('NOP' => $HasilPayment['NOP']));
+    foreach ($query->result_array() as $Inquiry)
+    {
+      $NOP = $Inquiry['NOP'];
+      $Nama = $Inquiry['Nama'];
+      $Alamat = $Inquiry['Alamat'];
+      $Masa = $Inquiry['Masa'];
+      $Tahun = $Inquiry['Tahun'];
+      $NoSK = $Inquiry['NoSK'];
+      $JatuhTempo = $Inquiry['JatuhTempo'];
+      $TanggalSekarang = $Inquiry['TanggalSekarang'];
+      $Selisih = $Inquiry['Selisih'];
+      $KodeRekening = $Inquiry['KodeRekening'];
+      $Pokok = $Inquiry['Pokok'];
+      $Denda = $Inquiry['Denda'];
+      $Total = $Inquiry['Total'];
+      $Lunas = $Inquiry['Lunas'];
+      $Aktif = $Inquiry['Aktif'];
+      $dataDouble = $Inquiry['dataDouble'];
+      $Hasil = array("NOP" => $NOP, "Nama" => $Nama, "Alamat" => $Alamat, "Masa" => $Masa,
+        "Tahun" => $Tahun, "NoSK" => $NoSK, "JatuhTempo" => $JatuhTempo, "TanggalSekarang" => $TanggalSekarang,
+        "Selisih" => $Selisih, "KodeRekening" => $KodeRekening, "Pokok" => $Pokok, "Denda" => $Denda,
+        "Total" => $Total, "Lunas" => $Lunas, "Aktif" => $Aktif, "dataDouble" => $dataDouble);
+    }
+    // print_r ($Inquiry);
+    // echo ($Inquiry['Nama']);
+    if(isset($HasilPayment['NOP']) == isset($Inquiry['NOP']))
+    {
+      $DataPayment = array( "Data" => $HasilPayment, "Status" => array("IsError" => "False", "ResponseCode" => "00", "ErrorDesc" => "Sukses"));
+      echo json_encode($DataPayment);
+    // $queryPayment = $this->db->insert('payment',$HasilPayment);
+    }else
+    {
+      $DataPayment = array( "Data" => "Kosong", "Status" => array("IsError" => "True", "ResponseCode" => "10", "ErrorDesc" => "Data tagihan tidak ditemukan"));
+      echo json_encode($DataPayment);
+    }
+    // if($queryPayment)
+    // {
+      // $Data = array( "Data" => $HasilPayment, "Status" => array("IsError:" => "False", "ResponseCode" => "00", "ErrorDesc" => "Sukses"));
+      // $this->response($Data,200);
+    // } elseif ($HasilPayment['NOP'] != $NOP)
+    // {
+      // $this->response("NOP sudah dibayar");
+    // } else
+    // {
+      // $this->response(array("Status" => array("IsError" => "True", "ResponseCode" => "10", "ErrorDesc" => "Data tagihan tidak ditemukan")));
+    // }
   }
   function reversal_patch()
   {
