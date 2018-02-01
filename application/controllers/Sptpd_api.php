@@ -12,7 +12,7 @@
 		function index_get()
 		{
 			// respond with information about sptpd
-			$NoID = $this->get('NoID');
+			$NoID = $this->get('noid');
 			if ($NoID == '')
 			{
 				$sptpd = $this->db->get('sptpd')->result();

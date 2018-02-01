@@ -110,8 +110,8 @@ $config['rest_realm'] = 'BPPKAD API';
 |           authorization key
 |
 */
-// $config['rest_auth'] = FALSE;
-$config['rest_auth'] = 'digest';
+$config['rest_auth'] = FALSE;
+// $config['rest_auth'] = 'digest';
 
 /*
 |--------------------------------------------------------------------------
