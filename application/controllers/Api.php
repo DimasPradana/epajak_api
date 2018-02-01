@@ -105,10 +105,11 @@ class api extends REST_Controller {
     {
       $DataPayment = array( "Data" => $HasilJoin, "Status" => array("IsError" => "False", "ResponseCode" => "00", "ErrorDesc" => "Sukses"));
       echo json_encode($DataPayment);
-      // insert
+      // insert payment
+      // update skp
     }elseif (isset($HasilPayment['NOP']) == isset($Inquiry['NOP']) || $Lunas == 1)
     {
-      $DataPayment = array( "Data" => "Kosong", "Status" => array("IsError" => "True", "ResponseCode" => "13", "ErrorDesc" => "Data tagihan telah lunas"));
+      $DataPayment = array( "Data" => "Lunas", "Status" => array("IsError" => "True", "ResponseCode" => "13", "ErrorDesc" => "Data tagihan telah lunas"));
       echo json_encode($DataPayment);
     }elseif($HasilPayment['Total'] != $Total)
     {
