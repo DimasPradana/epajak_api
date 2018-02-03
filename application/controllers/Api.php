@@ -151,69 +151,98 @@ class api extends REST_Controller {
     if(isset($HasilPayment['NOP']) == isset($Inquiry['NOP']) && $Lunas == 1)
     {
       $DataPayment = array( "Data" => "NOP telah melunasi tagihan", 
-                            "Status" => array(  "IsError" => "True", 
-                                                "ResponseCode" => "13", 
-                                                "ErrorDesc" => "Data tagihan telah lunas", 
-                                                "Total" => $Total, 
-                                                "HasilPaymentNOP" => $HasilPayment['NOP'], 
-                                                "InquiryNOP" => $Inquiry['NOP'], 
-                                                "Lunas" => $Lunas));
+                            "Status" => array(  
+                                                "IsError"         => "True",
+                                                "ResponseCode"    => "13",
+                                                "ErrorDesc"       => "Data tagihan telah lunas",
+                                                "Total"           => $Total,
+                                                "HasilPaymentNOP" => $HasilPayment['NOP'],
+                                                "InquiryNOP"      => $Inquiry['NOP'],
+                                                "Lunas"           => $Lunas));
       echo json_encode($DataPayment);
     } elseif (isset($HasilPayment['NOP']) == isset($Inquiry['NOP']) && $Lunas == '0' && $HasilPayment['Pokok'] != $Pokok || $HasilPayment['Denda'] != $Denda || $HasilPayment['Total'] != $Total)
     {
       $DataPayment = array( "Data" => "Jumlah tagihan (Pokok/Denda/Total) yang diinputkan tidak sama dengan tagihan", 
-                            "Status" => array(  "IsError" => "True", 
-                                                "ResponseCode" => "14", 
-                                                "ErrorDesc" => "Jumlah tagihan yang dibayarkan tidak sesuai", 
+                            "Status" => array(  
+                                                "IsError"           => "True",
+                                                "ResponseCode"      => "14",
+                                                "ErrorDesc"         => "Jumlah tagihan yang dibayarkan tidak sesuai",
                                                 "HasilPaymentPokok" => $HasilPayment['Pokok'],
-                                                "Pokok" => $Pokok,
+                                                "Pokok"             => $Pokok,
                                                 "HasilPaymentDenda" => $HasilPayment['Denda'],
-                                                "Denda" => $Denda,
+                                                "Denda"             => $Denda,
                                                 "HasilPaymentTotal" => $HasilPayment['Total'],
-                                                "Total" => $Total, 
-                                                "HasilPaymentNOP" => $HasilPayment['NOP'], 
-                                                "InquiryNOP" => $Inquiry['NOP'], 
-                                                "Lunas" => $Lunas));
+                                                "Total"             => $Total,
+                                                "HasilPaymentNOP"   => $HasilPayment['NOP'],
+                                                "InquiryNOP"        => $Inquiry['NOP'],
+                                                "Lunas"             => $Lunas));
       echo json_encode($DataPayment);  
     } elseif (isset($HasilPayment['NOP']) == isset($Inquiry['NOP']) && $Lunas == 0 && isset($HasilPayment['Total']) == $Total && isset($HasilPayment['Total']) == $Total)
     {
+      $nomor_skprd = substr($NOP, 13,5);
+      $pengesahan = $nomor_skprd.str_replace("/", "", date("H/i/d/m/y/D"));
       $DataPayment = array( "Data" => $HasilJoin, 
-                            "Status" => array(  "IsError" => "False", 
-                                                "ResponseCode" => "00", 
-                                                "ErrorDesc" => "Sukses", 
+                            "Status" => array(  
+                                                "IsError"           => "False",
+                                                "ResponseCode"      => "00",
+                                                "ErrorDesc"         => "Sukses",
+                                                "Nomor_skprd"       => $nomor_skprd,
                                                 "HasilPaymentPokok" => $HasilPayment['Pokok'],
-                                                "Pokok" => $Pokok,
+                                                "Pokok"             => $Pokok,
                                                 "HasilPaymentDenda" => $HasilPayment['Denda'],
-                                                "Denda" => $Denda,
+                                                "Denda"             => $Denda,
                                                 "HasilPaymentTotal" => $HasilPayment['Total'],
-                                                "Total" => $Total, 
-                                                "HasilPaymentNOP" => $HasilPayment['NOP'], 
-                                                "InquiryNOP" => $Inquiry['NOP'], 
-                                                "Lunas" => $Lunas));
+                                                "Total"             => $Total,
+                                                "HasilPaymentNOP"   => $HasilPayment['NOP'],
+                                                "InquiryNOP"        => $Inquiry['NOP'],
+                                                "Lunas"             => $Lunas,
+                                                "Pengesahan"        => $pengesahan
+                                              ));
+      $DataInsert = array(
+                            "NOP"        => $HasilPayment['NOP'],
+                            "Masa"       => $HasilPayment['Masa'],
+                            "Tahun"      => $HasilPayment['Tahun'],
+                            "Pokok"      => $HasilPayment['Pokok'],
+                            "Denda"      => $HasilPayment['Denda'],
+                            "Total"      => $HasilPayment['Total'],
+                            "Pengesahan" => $pengesahan
+                          );
+      $DataUpdate = array(
+                            "Nomor_SKPRD" => $nomor_skprd,
+                            "Lunas"       => "1",
+                            "Pengesahan"  => $pengesahan
+                          );
+      //insert data di table payment
+      $this->db->insert('payment', $DataInsert);
+      
+      //update kodepengesahan di table skp
+      $this->db->update('skp', $DataUpdate, "Nomor_SKPRD = ".$nomor_skprd);
       echo json_encode($DataPayment);
     } elseif (isset($HasilPayment['NOP']) != isset($Inquiry['NOP']))
     {
       $DataPayment = array( "Data" => "Kosong", 
-                            "Status" => array(  "IsError" => "True", 
-                                                "ResponseCode" => "10", 
-                                                "ErrorDesc" => "Data tagihan tidak ditemukan", 
+                            "Status" => array(  
+                                                "IsError"           => "True",
+                                                "ResponseCode"      => "10",
+                                                "ErrorDesc"         => "Data tagihan tidak ditemukan",
                                                 "HasilPaymentTotal" => $HasilPayment['Total'],
-                                                "Total" => $Total, 
-                                                "HasilPaymentNOP" => $HasilPayment['NOP'], 
-                                                "InquiryNOP" => $Inquiry['NOP'], 
-                                                "Lunas" => $Lunas));
+                                                "Total"             => $Total,
+                                                "HasilPaymentNOP"   => $HasilPayment['NOP'],
+                                                "InquiryNOP"        => $Inquiry['NOP'],
+                                                "Lunas"             => $Lunas));
       echo json_encode($DataPayment);
     } else 
     {
       $DataPayment = array( "Data" => "System Failure", 
-                            "Status" => array(  "IsError" => "True", 
-                                                "ResponseCode" => "99", 
-                                                "ErrorDesc" => "System Failure", 
+                            "Status" => array(  
+                                                "IsError"           => "True",
+                                                "ResponseCode"      => "99",
+                                                "ErrorDesc"         => "System Failure",
                                                 "HasilPaymentTotal" => $HasilPayment['Total'],
-                                                "Total" => $Total, 
-                                                "HasilPaymentNOP" => $HasilPayment['NOP'], 
-                                                "InquiryNOP" => $Inquiry['NOP'], 
-                                                "Lunas" => $Lunas));
+                                                "Total"             => $Total,
+                                                "HasilPaymentNOP"   => $HasilPayment['NOP'],
+                                                "InquiryNOP"        => $Inquiry['NOP'],
+                                                "Lunas"             => $Lunas));
       echo json_encode($DataPayment);
     }
   }
@@ -231,6 +260,11 @@ class api extends REST_Controller {
       'Total' => $this->patch('Total')
     );
     $this->db->where('NOP',$NOP);
+    $DataUpdate = array(
+                          "Nomor_SKPRD" => $nomor_skprd,
+                          "Lunas"       => "1",
+                          "Pengesahan"  => $pengesahan
+                        );
     $update = $this->db->update('payment',$hasilReversal);
     if ($update)
     {
