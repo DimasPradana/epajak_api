@@ -101,23 +101,72 @@ class api extends REST_Controller {
       "JatuhTempo" => $JatuhTempo, "KodeRekening" => $KodeRekening, "Pokok" => $HasilPayment['Pokok'], "Denda" => $HasilPayment['Denda'],
       "Total" => $HasilPayment['Total']);
 
-    if(isset($HasilPayment['NOP']) == isset($Inquiry['NOP']))
+    if(isset($HasilPayment['NOP']) == isset($Inquiry['NOP']) && $Lunas == 1)
     {
-      $DataPayment = array( "Data" => $HasilJoin, "Status" => array("IsError" => "False", "ResponseCode" => "00", "ErrorDesc" => "Sukses"));
+      $DataPayment = array( "Data" => "NOP telah melunasi tagihan", 
+        "Status" => array(  "IsError" => "True", 
+        "ResponseCode" => "13", 
+        "ErrorDesc" => "Data tagihan telah lunas", 
+        "Total" => $Total, 
+        "HasilPaymentNOP" => $HasilPayment['NOP'], 
+        "InquiryNOP" => $Inquiry['NOP'], 
+        "Lunas" => $Lunas));
       echo json_encode($DataPayment);
-      // insert payment
-      // update skp
-    }elseif (isset($HasilPayment['NOP']) == isset($Inquiry['NOP']) || $Lunas == 1)
+    } elseif (isset($HasilPayment['NOP']) == isset($Inquiry['NOP']) && $Lunas == '0' && $HasilPayment['Pokok'] != $Pokok || $HasilPayment['Denda'] != $Denda || $HasilPayment['Total'] != $Total)
     {
-      $DataPayment = array( "Data" => "Lunas", "Status" => array("IsError" => "True", "ResponseCode" => "13", "ErrorDesc" => "Data tagihan telah lunas"));
+      $DataPayment = array( "Data" => "Jumlah tagihan (Pokok/Denda/Total) yang diinputkan tidak sama dengan tagihan", 
+        "Status" => array(  "IsError" => "True", 
+        "ResponseCode" => "14", 
+        "ErrorDesc" => "Jumlah tagihan yang dibayarkan tidak sesuai", 
+        "HasilPaymentPokok" => $HasilPayment['Pokok'],
+        "Pokok" => $Pokok,
+        "HasilPaymentDenda" => $HasilPayment['Denda'],
+        "Denda" => $Denda,
+        "HasilPaymentTotal" => $HasilPayment['Total'],
+        "Total" => $Total, 
+        "HasilPaymentNOP" => $HasilPayment['NOP'], 
+        "InquiryNOP" => $Inquiry['NOP'], 
+        "Lunas" => $Lunas));
+      echo json_encode($DataPayment);  
+    } elseif (isset($HasilPayment['NOP']) == isset($Inquiry['NOP']) && $Lunas == 0 && isset($HasilPayment['Total']) == $Total && isset($HasilPayment['Total']) == $Total)
+    {
+      $DataPayment = array( "Data" => $HasilJoin, 
+        "Status" => array(  "IsError" => "False", 
+        "ResponseCode" => "00", 
+        "ErrorDesc" => "Sukses", 
+        "HasilPaymentPokok" => $HasilPayment['Pokok'],
+        "Pokok" => $Pokok,
+        "HasilPaymentDenda" => $HasilPayment['Denda'],
+        "Denda" => $Denda,
+        "HasilPaymentTotal" => $HasilPayment['Total'],
+        "Total" => $Total, 
+        "HasilPaymentNOP" => $HasilPayment['NOP'], 
+        "InquiryNOP" => $Inquiry['NOP'], 
+        "Lunas" => $Lunas));
       echo json_encode($DataPayment);
-    }elseif($HasilPayment['Total'] != $Total)
+    } elseif (isset($HasilPayment['NOP']) != isset($Inquiry['NOP']))
     {
-      $DataPayment = array( "Data" => "total tidak sama", "Status" => array("IsError" => "True", "ResponseCode" => "14", "ErrorDesc" => "Jumlah tagihan yang dibayarkan tidak sesuai"));
+      $DataPayment = array( "Data" => "Kosong", 
+        "Status" => array( "IsError" => "True", 
+        "ResponseCode" => "10", 
+        "ErrorDesc" => "Data tagihan tidak ditemukan", 
+        "HasilPaymentTotal" => $HasilPayment['Total'],
+        "Total" => $Total, 
+        "HasilPaymentNOP" => $HasilPayment['NOP'], 
+        "InquiryNOP" => $Inquiry['NOP'], 
+        "Lunas" => $Lunas));
       echo json_encode($DataPayment);
-    }else
+    } else 
     {
-      $DataPayment = array( "Data" => "Kosong",  "Status" => array("IsError" => "True", "ResponseCode" => "10", "ErrorDesc" => "Data tagihan tidak ditemukan"));
+      $DataPayment = array( "Data" => "System Failure", 
+        "Status" => array( "IsError" => "True", 
+        "ResponseCode" => "99", 
+        "ErrorDesc" => "System Failure", 
+        "HasilPaymentTotal" => $HasilPayment['Total'],
+        "Total" => $Total, 
+        "HasilPaymentNOP" => $HasilPayment['NOP'], 
+        "InquiryNOP" => $Inquiry['NOP'], 
+        "Lunas" => $Lunas));
       echo json_encode($DataPayment);
     }
   }
