@@ -14,6 +14,7 @@ class api extends REST_Controller {
   }
 
 
+  //inquiry
   function inquiry_get()
   {
     $NOP = $this->get('NOP');
@@ -87,6 +88,7 @@ class api extends REST_Controller {
   }
 
 
+  //payment
   function payment_post()
   {
     $HasilPayment = array(
@@ -215,7 +217,7 @@ class api extends REST_Controller {
       //insert data di table payment
       $this->db->insert('payment', $DataInsert);
       
-      //update kodepengesahan di table skp
+      //update lunas & kodepengesahan di table skp
       $this->db->update('skp', $DataUpdate, "Nomor_SKPRD = ".$nomor_skprd);
       echo json_encode($DataPayment);
     } elseif (isset($HasilPayment['NOP']) != isset($Inquiry['NOP']))
@@ -248,32 +250,28 @@ class api extends REST_Controller {
   }
 
 
-  function reversal_patch()
+  //reversal
+  function reversal_post()
   {
-    $NOP = $this->patch('NOP');
-    $hasilReversal = array(
-      'NOP'   => $this->patch('NOP'),
-      'Masa'  => $this->patch('Masa'),
-      'Tahun' => $this->patch('Tahun'),
-      'Pokok' => $this->patch('Pokok'),
-      'Denda' => $this->patch('Denda'),
-      'Total' => $this->patch('Total')
-    );
-    $this->db->where('NOP',$NOP);
-    $DataUpdate = array(
-                          "Nomor_SKPRD" => $nomor_skprd,
-                          "Lunas"       => "1",
-                          "Pengesahan"  => $pengesahan
-                        );
-    $update = $this->db->update('payment',$hasilReversal);
-    if ($update)
-    {
-      $this->response($data,200);
-    } else
-    {
-      $this->response(array('status' => 'fail',204));
-    }
-  }
+    $NOP = $this->post('NOP');
+    $nomor_skprd = substr($NOP, 13,5);
+    $Data = array
+    (
+      "Pengesahan" => "",
+       "Lunas"   => "0"
+     );
 
+    //update
+    $this->db->update('skp', $Data,'Nomor_SKPRD = '.$nomor_skprd);
+
+    //delete
+    $this->db->delete('payment', 'NOP ='.$NOP);
+    $DataReversal = array(  "Data"   => $NOP,
+                            "Status" => array(  "IsError" => "False",
+                                          "ResponseCode" => "00",
+                                          "ErrorDesc"    => "Success"
+    ));
+    echo json_encode($DataReversal); 
+  }
 }
 ?>
