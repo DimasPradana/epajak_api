@@ -276,11 +276,11 @@ class api extends REST_Controller {
           //update
           $this->db->update('skp', $Data,'Nomor_SKPRD = '.$nomor_skprd);
           //delete
-          $this->db->delete('reversal', 'NOP ='.$HasilReversal['NOP']);
+          $this->db->delete('payment', 'NOP ='.$HasilReversal['NOP']);
 
           $DataReversal = array( "Data" => $HasilReversal['NOP'], 
                               "Status" => array(  
-                                                  "IsError"           => "True",
+                                                  "IsError"           => "False",
                                                   "ResponseCode"      => "00",
                                                   "ErrorDesc"         => "sukses"
                                                   ));
