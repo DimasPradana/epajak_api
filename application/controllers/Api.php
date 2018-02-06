@@ -252,26 +252,59 @@ class api extends REST_Controller {
 
   //reversal
   function reversal_post()
-  {
-    $NOP = $this->post('NOP');
-    $nomor_skprd = substr($NOP, 13,5);
-    $Data = array
-    (
-      "Pengesahan" => "",
-       "Lunas"   => "0"
-     );
+    {
+      $HasilReversal = array(
+          'NOP'   => $this->post('NOP'));
 
-    //update
-    $this->db->update('skp', $Data,'Nomor_SKPRD = '.$nomor_skprd);
+      $query = $this->db->get_where('payment', array('NOP' => $HasilReversal['NOP']));
+      foreach ($query->result_array() as $reversal)
+      {
+        $NOP = $reversal['NOP'];
+        $Hasil = array(
+              "NOP" => $NOP
+        );
+      }
 
-    //delete
-    $this->db->delete('payment', 'NOP ='.$NOP);
-    $DataReversal = array(  "Data"   => $NOP,
-                            "Status" => array(  "IsError" => "False",
-                                          "ResponseCode" => "00",
-                                          "ErrorDesc"    => "Success"
-    ));
-    echo json_encode($DataReversal); 
+      $nomor_skprd = substr($HasilReversal['NOP'], 13,5);
+      $Data = array(
+                  "Pengesahan" => "",
+                  "Lunas"   => "0"
+      );
+
+      if (isset($HasilReversal['NOP']) == isset($reversal['NOP']))
+      {
+          //update
+          $this->db->update('skp', $Data,'Nomor_SKPRD = '.$nomor_skprd);
+          //delete
+          $this->db->delete('reversal', 'NOP ='.$HasilReversal['NOP']);
+
+          $DataReversal = array( "Data" => $HasilReversal['NOP'], 
+                              "Status" => array(  
+                                                  "IsError"           => "True",
+                                                  "ResponseCode"      => "00",
+                                                  "ErrorDesc"         => "sukses"
+                                                  ));
+        echo json_encode($DataReversal);
+      } elseif (isset($HasilReversal['NOP']) != isset($reversal['NOP'])) 
+      {
+          $DataReversal = array( "Data" => "Kosong", 
+                              "Status" => array(  
+                                                  "IsError"           => "True",
+                                                  "ResponseCode"      => "10",
+                                                  "ErrorDesc"         => "Data tagihan tidak ditemukan" 
+                                                  ));
+          
+          echo json_encode($DataReversal);
+      } else 
+      {	
+          $DataReversal = array( "Data" => "System Failure", 
+                              "Status" => array(  
+                                                  "IsError"           => "True",
+                                                  "ResponseCode"      => "99",
+                                                  "ErrorDesc"         => "System Failure" 
+                                                  ));
+          echo json_encode($DataReversal);	
+      }
   }
 }
 ?>
