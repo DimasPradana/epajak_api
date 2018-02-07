@@ -41,8 +41,6 @@ class api extends REST_Controller {
         $Denda           = $Inquiry['Denda'];
         $Total           = $Inquiry['Total'];
         $Lunas           = $Inquiry['Lunas'];
-        $Aktif           = $Inquiry['Aktif'];
-        $dataDouble      = $Inquiry['dataDouble'];
         $Hasil = array(
             "NOP"             => $NOP,
             "Nama"            => $Nama,
@@ -58,8 +56,6 @@ class api extends REST_Controller {
             "Denda"           => $Denda,
             "Total"           => $Total,
             "Lunas"           => $Lunas,
-            "Aktif"           => $Aktif,
-            "dataDouble"      => $dataDouble
         );
       }
       if (!isset($Hasil))
@@ -117,8 +113,6 @@ class api extends REST_Controller {
       $Denda           = $Inquiry['Denda'];
       $Total           = $Inquiry['Total'];
       $Lunas           = $Inquiry['Lunas'];
-      $Aktif           = $Inquiry['Aktif'];
-      $dataDouble      = $Inquiry['dataDouble'];
       $Hasil = array(
           "NOP"             => $NOP,
           "Nama"            => $Nama,
@@ -134,8 +128,6 @@ class api extends REST_Controller {
           "Denda"           => $Denda,
           "Total"           => $Total,
           "Lunas"           => $Lunas,
-          "Aktif"           => $Aktif,
-          "dataDouble"      => $dataDouble
       );
     }
 
@@ -150,7 +142,17 @@ class api extends REST_Controller {
         "Total"        => $HasilPayment['Total']
     );
 
-    if(isset($HasilPayment['NOP']) == isset($Inquiry['NOP']) && $Lunas == 1)
+    if (!isset($Hasil))
+    {
+      $DataPayment = array( "Data" => "Kosong",
+                            "Status" => array(
+                                                "IsError:"     => "True",
+                                                "ResponseCode" => "10",
+                                                "ErrorDesc"    => "Data tagihan tidak ditemukan"
+          )
+      );
+      echo json_encode($DataPayment);
+    } elseif (isset($HasilPayment['NOP']) == isset($Inquiry['NOP']) && $Lunas == 1)
     {
       $DataPayment = array( "Data" => "NOP telah melunasi tagihan", 
                             "Status" => array(  
