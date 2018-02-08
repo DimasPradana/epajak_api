@@ -34,13 +34,10 @@ class api extends REST_Controller {
         $Tahun           = $Inquiry['Tahun'];
         $NoSK            = $Inquiry['NoSK'];
         $JatuhTempo      = $Inquiry['JatuhTempo'];
-        $TanggalSekarang = $Inquiry['TanggalSekarang'];
-        $Selisih         = $Inquiry['Selisih'];
-        $KodeRekening    = $Inquiry['KodeRekening'];
+        $KodeRekening    = str_replace(".","",$Inquiry['KodeRekening']);
         $Pokok           = $Inquiry['Pokok'];
         $Denda           = $Inquiry['Denda'];
         $Total           = $Inquiry['Total'];
-        $Lunas           = $Inquiry['Lunas'];
         $Hasil = array(
             "NOP"             => $NOP,
             "Nama"            => $Nama,
@@ -49,19 +46,15 @@ class api extends REST_Controller {
             "Tahun"           => $Tahun,
             "NoSK"            => $NoSK,
             "JatuhTempo"      => $JatuhTempo,
-            "TanggalSekarang" => $TanggalSekarang,
-            "Selisih"         => $Selisih,
             "KodeRekening"    => $KodeRekening,
             "Pokok"           => $Pokok,
             "Denda"           => $Denda,
             "Total"           => $Total,
-            "Lunas"           => $Lunas,
         );
       }
       if (!isset($Hasil))
       {
         $Data = array(
-            "Data" => "Kosong",
             "Status"           => array(
                 "IsError:"     => "True",
                 "ResponseCode" => "10",
@@ -71,7 +64,17 @@ class api extends REST_Controller {
       } else
       {
         $Data = array(
-            "Data" => $Hasil,
+            "NOP"             => $NOP,
+            "Nama"            => $Nama,
+            "Alamat"          => $Alamat,
+            "Masa"            => $Masa,
+            "Tahun"           => $Tahun,
+            "NoSK"            => $NoSK,
+            "JatuhTempo"      => $JatuhTempo,
+            "KodeRekening"    => $KodeRekening,
+            "Pokok"           => $Pokok,
+            "Denda"           => $Denda,
+            "Total"           => $Total,
             "Status"           => array(
                 "IsError:"     => "True",
                 "ResponseCode" => "00",
@@ -106,9 +109,7 @@ class api extends REST_Controller {
       $Tahun           = $Inquiry['Tahun'];
       $NoSK            = $Inquiry['NoSK'];
       $JatuhTempo      = $Inquiry['JatuhTempo'];
-      $TanggalSekarang = $Inquiry['TanggalSekarang'];
-      $Selisih         = $Inquiry['Selisih'];
-      $KodeRekening    = $Inquiry['KodeRekening'];
+      $KodeRekening    = str_replace(".","",$Inquiry['KodeRekening']);
       $Pokok           = $Inquiry['Pokok'];
       $Denda           = $Inquiry['Denda'];
       $Total           = $Inquiry['Total'];
@@ -121,13 +122,10 @@ class api extends REST_Controller {
           "Tahun"           => $Tahun,
           "NoSK"            => $NoSK,
           "JatuhTempo"      => $JatuhTempo,
-          "TanggalSekarang" => $TanggalSekarang,
-          "Selisih"         => $Selisih,
           "KodeRekening"    => $KodeRekening,
           "Pokok"           => $Pokok,
           "Denda"           => $Denda,
           "Total"           => $Total,
-          "Lunas"           => $Lunas,
       );
     }
 
@@ -144,7 +142,7 @@ class api extends REST_Controller {
 
     if (!isset($Hasil))
     {
-      $DataPayment = array( "Data" => "Kosong",
+      $DataPayment = array( 
                             "Status" => array(
                                                 "IsError:"     => "True",
                                                 "ResponseCode" => "10",
@@ -154,53 +152,40 @@ class api extends REST_Controller {
       echo json_encode($DataPayment);
     } elseif (isset($HasilPayment['NOP']) == isset($Inquiry['NOP']) && $Lunas == 1)
     {
-      $DataPayment = array( "Data" => "NOP telah melunasi tagihan", 
+      $DataPayment = array(  
                             "Status" => array(  
                                                 "IsError"         => "True",
                                                 "ResponseCode"    => "13",
                                                 "ErrorDesc"       => "Data tagihan telah lunas",
-                                                "Total"           => $Total,
-                                                "HasilPaymentNOP" => $HasilPayment['NOP'],
-                                                "InquiryNOP"      => $Inquiry['NOP'],
-                                                "Lunas"           => $Lunas));
+                                              ));
       echo json_encode($DataPayment);
     } elseif (isset($HasilPayment['NOP']) == isset($Inquiry['NOP']) && $Lunas == '0' && $HasilPayment['Pokok'] != $Pokok || $HasilPayment['Denda'] != $Denda || $HasilPayment['Total'] != $Total)
     {
-      $DataPayment = array( "Data" => "Jumlah tagihan (Pokok/Denda/Total) yang diinputkan tidak sama dengan tagihan", 
+      $DataPayment = array(  
                             "Status" => array(  
                                                 "IsError"           => "True",
                                                 "ResponseCode"      => "14",
                                                 "ErrorDesc"         => "Jumlah tagihan yang dibayarkan tidak sesuai",
-                                                "HasilPaymentPokok" => $HasilPayment['Pokok'],
-                                                "Pokok"             => $Pokok,
-                                                "HasilPaymentDenda" => $HasilPayment['Denda'],
-                                                "Denda"             => $Denda,
-                                                "HasilPaymentTotal" => $HasilPayment['Total'],
-                                                "Total"             => $Total,
-                                                "HasilPaymentNOP"   => $HasilPayment['NOP'],
-                                                "InquiryNOP"        => $Inquiry['NOP'],
-                                                "Lunas"             => $Lunas));
+                                              ));
       echo json_encode($DataPayment);  
     } elseif (isset($HasilPayment['NOP']) == isset($Inquiry['NOP']) && $Lunas == 0 && isset($HasilPayment['Total']) == $Total && isset($HasilPayment['Total']) == $Total)
     {
       $nomor_skprd = substr($NOP, 13,5);
       $pengesahan = $nomor_skprd.str_replace("/", "", date("H/i/d/m/y/D"));
-      $DataPayment = array( "Data" => $HasilJoin, 
+      $DataPayment = array( 
+                            "NOP"          => $HasilPayment['NOP'],
+                            "Masa"         => $HasilPayment['Masa'],
+                            "Tahun"        => $HasilPayment['Tahun'],
+                            "JatuhTempo"   => $JatuhTempo,
+                            "KodeRekening" => $KodeRekening,
+                            "Pokok"        => $HasilPayment['Pokok'],
+                            "Denda"        => $HasilPayment['Denda'],
+                            "Total"        => $HasilPayment['Total'],
+                            "Pengesahan"   => $pengesahan,
                             "Status" => array(  
                                                 "IsError"           => "False",
                                                 "ResponseCode"      => "00",
-                                                "ErrorDesc"         => "Sukses",
-                                                "Nomor_skprd"       => $nomor_skprd,
-                                                "HasilPaymentPokok" => $HasilPayment['Pokok'],
-                                                "Pokok"             => $Pokok,
-                                                "HasilPaymentDenda" => $HasilPayment['Denda'],
-                                                "Denda"             => $Denda,
-                                                "HasilPaymentTotal" => $HasilPayment['Total'],
-                                                "Total"             => $Total,
-                                                "HasilPaymentNOP"   => $HasilPayment['NOP'],
-                                                "InquiryNOP"        => $Inquiry['NOP'],
-                                                "Lunas"             => $Lunas,
-                                                "Pengesahan"        => $pengesahan
+                                                "ErrorDesc"         => "Sukses"
                                               ));
       $DataInsert = array(
                             "NOP"        => $HasilPayment['NOP'],
@@ -224,29 +209,21 @@ class api extends REST_Controller {
       echo json_encode($DataPayment);
     } elseif (isset($HasilPayment['NOP']) != isset($Inquiry['NOP']))
     {
-      $DataPayment = array( "Data" => "Kosong", 
+      $DataPayment = array(  
                             "Status" => array(  
                                                 "IsError"           => "True",
                                                 "ResponseCode"      => "10",
-                                                "ErrorDesc"         => "Data tagihan tidak ditemukan",
-                                                "HasilPaymentTotal" => $HasilPayment['Total'],
-                                                "Total"             => $Total,
-                                                "HasilPaymentNOP"   => $HasilPayment['NOP'],
-                                                "InquiryNOP"        => $Inquiry['NOP'],
-                                                "Lunas"             => $Lunas));
+                                                "ErrorDesc"         => "Data tagihan tidak ditemukan"
+                                              ));
       echo json_encode($DataPayment);
     } else 
     {
-      $DataPayment = array( "Data" => "System Failure", 
+      $DataPayment = array(  
                             "Status" => array(  
                                                 "IsError"           => "True",
                                                 "ResponseCode"      => "99",
-                                                "ErrorDesc"         => "System Failure",
-                                                "HasilPaymentTotal" => $HasilPayment['Total'],
-                                                "Total"             => $Total,
-                                                "HasilPaymentNOP"   => $HasilPayment['NOP'],
-                                                "InquiryNOP"        => $Inquiry['NOP'],
-                                                "Lunas"             => $Lunas));
+                                                "ErrorDesc"         => "System Failure"
+                                              ));
       echo json_encode($DataPayment);
     }
   }
@@ -256,7 +233,13 @@ class api extends REST_Controller {
   function reversal_post()
     {
       $HasilReversal = array(
-          'NOP'   => $this->post('NOP'));
+                            'NOP'   => $this->post('NOP'),
+                            'Masa'  => $this->post('Masa'),
+                            'Tahun' => $this->post('Tahun'),
+                            'Pokok' => $this->post('Pokok'),
+                            'Denda' => $this->post('Denda'),
+                            'Total' => $this->post('Total')
+                          );
 
       $query = $this->db->get_where('payment', array('NOP' => $HasilReversal['NOP']));
       foreach ($query->result_array() as $reversal)
@@ -280,7 +263,7 @@ class api extends REST_Controller {
           //delete
           $this->db->delete('payment', 'NOP ='.$HasilReversal['NOP']);
 
-          $DataReversal = array( "Data" => $HasilReversal['NOP'], 
+          $DataReversal = array(  
                               "Status" => array(  
                                                   "IsError"           => "False",
                                                   "ResponseCode"      => "00",
@@ -289,7 +272,7 @@ class api extends REST_Controller {
         echo json_encode($DataReversal);
       } elseif (isset($HasilReversal['NOP']) != isset($reversal['NOP'])) 
       {
-          $DataReversal = array( "Data" => "Kosong", 
+          $DataReversal = array(  
                               "Status" => array(  
                                                   "IsError"           => "True",
                                                   "ResponseCode"      => "10",
@@ -299,7 +282,7 @@ class api extends REST_Controller {
           echo json_encode($DataReversal);
       } else 
       {	
-          $DataReversal = array( "Data" => "System Failure", 
+          $DataReversal = array(  
                               "Status" => array(  
                                                   "IsError"           => "True",
                                                   "ResponseCode"      => "99",
