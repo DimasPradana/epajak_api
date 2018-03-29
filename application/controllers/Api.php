@@ -27,31 +27,31 @@ class api extends REST_Controller {
       $query = $this->db->get_where('inquiry', array('Nop' => $Nop));
       foreach ($query->result_array() as $Inquiry)
       {
-        $Nop          = $Inquiry['Nop'];
-        $Nama         = $Inquiry['Nama'];
-        $Alamat       = $Inquiry['Alamat'];
-        $Masa         = $Inquiry['Masa'];
-        $Tahun        = $Inquiry['Tahun'];
-        $NoSK         = $Inquiry['NoSK'];
-        $JatuhTempo   = $Inquiry['JatuhTempo'];
-        $KodeRekening = str_replace(".","",$Inquiry['KodeRekening']);
-        $Lunas        = $Inquiry['Lunas'];
-        $Pokok        = $Inquiry['Pokok'];
-        $Denda        = $Inquiry['Denda'];
-        $Total        = $Inquiry['Total'];
-        $Hasil        = array(
-            "Nop"          => $Nop,
-            "Nama"         => $Nama,
-            "Alamat"       => $Alamat,
-            "Masa"         => $Masa,
-            "Tahun"        => $Tahun,
-            "NoSK"         => $NoSK,
-            "JatuhTempo"   => $JatuhTempo,
-            "KodeRekening" => $KodeRekening,
-            "Pokok"        => $Pokok,
-            "Lunas"        => $Lunas,
-            "Denda"        => $Denda,
-            "Total"        => $Total,
+        $Nop             = $Inquiry['Nop'];
+        $Nama            = $Inquiry['Nama'];
+        $Alamat          = $Inquiry['Alamat'];
+        $Masa            = $Inquiry['Masa'];
+        $Tahun           = $Inquiry['Tahun'];
+        $NoSK            = $Inquiry['NoSK'];
+        $JatuhTempo      = $Inquiry['JatuhTempo'];
+        $KodeRekening    = str_replace(".","",$Inquiry['KodeRekening']);
+        $Lunas= $Inquiry['Lunas'];
+        $Pokok           = (int) $Inquiry['Pokok'];
+        $Denda           = (int) $Inquiry['Denda'];
+        $Total           = (int) $Inquiry['Total'];
+        $Hasil = array(
+            "Nop"             => $Nop,
+            "Nama"            => $Nama,
+            "Alamat"          => $Alamat,
+            "Masa"            => $Masa,
+            "Tahun"           => $Tahun,
+            "NoSk"            => $NoSK,
+            "JatuhTempo"      => $JatuhTempo,
+            "KodeRek"    => $KodeRekening,
+            "Pokok"           => $Pokok,
+            "Lunas"=> $Lunas,
+            "Denda"           => $Denda,
+            "Total"           => $Total,
         );
       }
       if (!isset($Hasil['Nop']))
@@ -62,9 +62,9 @@ class api extends REST_Controller {
             "Alamat"           => null,
             "Masa"             => null,
             "Tahun"            => null,
-            "NoSK"             => null,
+            "NoSk"             => null,
             "JatuhTempo"       => null,
-            "KodeRekening"     => null,
+            "KodeRek"	       => null,
             "Pokok"            => null,
             "Denda"            => null,
             "Total"            => null,
@@ -82,9 +82,9 @@ class api extends REST_Controller {
             "Alamat"           => $Alamat,
             "Masa"             => $Masa,
             "Tahun"            => $Tahun,
-            "NoSK"             => $NoSK,
+            "NoSk"             => $NoSK,
             "JatuhTempo"       => $JatuhTempo,
-            "KodeRekening"     => $KodeRekening,
+            "KodeRek"     => $KodeRekening,
             "Pokok"            => $Pokok,
             "Denda"            => $Denda,
             "Total"            => $Total,
@@ -102,9 +102,9 @@ class api extends REST_Controller {
             "Alamat"           => $Alamat,
             "Masa"             => $Masa,
             "Tahun"            => $Tahun,
-            "NoSK"             => $NoSK,
+            "NoSk"             => $NoSK,
             "JatuhTempo"       => $JatuhTempo,
-            "KodeRekening"     => $KodeRekening,
+            "KodeRek"     => $KodeRekening,
             "Pokok"            => $Pokok,
             "Denda"            => $Denda,
             "Total"            => $Total,
@@ -143,9 +143,9 @@ class api extends REST_Controller {
       $NoSK            = $Inquiry['NoSK'];
       $JatuhTempo      = $Inquiry['JatuhTempo'];
       $KodeRekening    = str_replace(".","",$Inquiry['KodeRekening']);
-      $Pokok           = $Inquiry['Pokok'];
-      $Denda           = $Inquiry['Denda'];
-      $Total           = $Inquiry['Total'];
+      $Pokok           = (int) $Inquiry['Pokok'];
+      $Denda           = (int) $Inquiry['Denda'];
+      $Total           = (int) $Inquiry['Total'];
       $Lunas           = $Inquiry['Lunas'];
       $Hasil = array(
           "Nop"             => $Nop,
@@ -153,9 +153,9 @@ class api extends REST_Controller {
           "Alamat"          => $Alamat,
           "Masa"            => $Masa,
           "Tahun"           => $Tahun,
-          "NoSK"            => $NoSK,
+          "NoSk"            => $NoSK,
           "JatuhTempo"      => $JatuhTempo,
-          "KodeRekening"    => $KodeRekening,
+          "KodeRek"    => $KodeRekening,
           "Pokok"           => $Pokok,
           "Denda"           => $Denda,
           "Total"           => $Total,
@@ -180,12 +180,12 @@ class api extends REST_Controller {
                             "Masa"         => $HasilPayment['Masa'],
                             "Tahun"        => $HasilPayment['Tahun'],
                             "JatuhTempo"   => $JatuhTempo,
-                            "KodeRekening" => $KodeRekening,
+                            "KodeRek" => $KodeRekening,
                             "Pokok"        => $HasilPayment['Pokok'],
                             "Denda"        => $HasilPayment['Denda'],
                             "Total"        => $HasilPayment['Total'],
                             "Pengesahan"   => $pengesahan,
-                            "Status"       => array(
+                            "Status" => array(
                                                 "IsError"      => "True",
                                                 "ResponseCode" => "10",
                                                 "ErrorDesc"    => "Data tagihan tidak ditemukan"
@@ -199,12 +199,12 @@ class api extends REST_Controller {
                             "Masa"         => $HasilPayment['Masa'],
                             "Tahun"        => $HasilPayment['Tahun'],
                             "JatuhTempo"   => $JatuhTempo,
-                            "KodeRekening" => $KodeRekening,
+                            "KodeRek" => $KodeRekening,
                             "Pokok"        => $HasilPayment['Pokok'],
                             "Denda"        => $HasilPayment['Denda'],
                             "Total"        => $HasilPayment['Total'],
                             "Pengesahan"   => $pengesahan,
-                            "Status"       => array(
+                            "Status" => array(  
                                                 "IsError"         => "True",
                                                 "ResponseCode"    => "13",
                                                 "ErrorDesc"       => "Data tagihan telah lunas",
@@ -217,12 +217,12 @@ class api extends REST_Controller {
                             "Masa"         => $HasilPayment['Masa'],
                             "Tahun"        => $HasilPayment['Tahun'],
                             "JatuhTempo"   => $JatuhTempo,
-                            "KodeRekening" => $KodeRekening,
+                            "KodeRek" => $KodeRekening,
                             "Pokok"        => $HasilPayment['Pokok'],
                             "Denda"        => $HasilPayment['Denda'],
                             "Total"        => $HasilPayment['Total'],
                             "Pengesahan"   => $pengesahan,
-                            "Status"       => array(
+                            "Status" => array(  
                                                 "IsError"           => "True",
                                                 "ResponseCode"      => "14",
                                                 "ErrorDesc"         => "Jumlah tagihan yang dibayarkan tidak sesuai",
@@ -231,13 +231,14 @@ class api extends REST_Controller {
     } elseif (isset($HasilPayment['Nop']) == isset($Inquiry['Nop']) && $Lunas == 0 && isset($HasilPayment['Total']) == $Total && isset($HasilPayment['Total']) == $Total)
     {
       $nomor_skprd = substr($Nop, 13,5);
-      $pengesahan = $nomor_skprd.str_replace("/", "", date("H/d/m/y/B"));
+      //$pengesahan = $nomor_skprd.str_replace("/", "", date("H/d/m/y/B"));
+	  $pengesahan = '3512'.$nomor_skprd.str_replace("/", "", date("d/m/y/N"));
       $DataPayment = array( 
                             "Nop"          => $HasilPayment['Nop'],
                             "Masa"         => $HasilPayment['Masa'],
                             "Tahun"        => $HasilPayment['Tahun'],
                             "JatuhTempo"   => $JatuhTempo,
-                            "KodeRekening" => $KodeRekening,
+                            "KodeRek" => $KodeRekening,
                             "Pokok"        => $HasilPayment['Pokok'],
                             "Denda"        => $HasilPayment['Denda'],
                             "Total"        => $HasilPayment['Total'],
@@ -274,12 +275,12 @@ class api extends REST_Controller {
                             "Masa"         => $HasilPayment['Masa'],
                             "Tahun"        => $HasilPayment['Tahun'],
                             "JatuhTempo"   => $JatuhTempo,
-                            "KodeRekening" => $KodeRekening,
+                            "KodeRek" => $KodeRekening,
                             "Pokok"        => $HasilPayment['Pokok'],
                             "Denda"        => $HasilPayment['Denda'],
                             "Total"        => $HasilPayment['Total'],
                             "Pengesahan"   => $pengesahan,
-                            "Status"       => array(
+                            "Status" => array(  
                                                 "IsError"           => "True",
                                                 "ResponseCode"      => "10",
                                                 "ErrorDesc"         => "Data tagihan tidak ditemukan"
@@ -292,12 +293,12 @@ class api extends REST_Controller {
                             "Masa"         => $HasilPayment['Masa'],
                             "Tahun"        => $HasilPayment['Tahun'],
                             "JatuhTempo"   => $JatuhTempo,
-                            "KodeRekening" => $KodeRekening,
+                            "KodeRek" => $KodeRekening,
                             "Pokok"        => $HasilPayment['Pokok'],
                             "Denda"        => $HasilPayment['Denda'],
                             "Total"        => $HasilPayment['Total'],
                             "Pengesahan"   => $pengesahan,
-                            "Status"       => array(
+                            "Status" => array(  
                                                 "IsError"           => "True",
                                                 "ResponseCode"      => "99",
                                                 "ErrorDesc"         => "System Failure"
@@ -322,15 +323,19 @@ class api extends REST_Controller {
       $query = $this->db->get_where('payment', array('Nop' => $HasilReversal['Nop']));
       foreach ($query->result_array() as $reversal)
       {
-        $Nop   = $reversal['Nop'];
+        $Nop   = !isset($reversal['Nop']);
         $Masa  = $reversal['Masa'];
         $Tahun = $reversal['Tahun'];
-        $Pokok = $reversal['Pokok'];
-        $Denda = $reversal['Denda'];
-        $Total = $reversal['Total'];
+        // $JatuhTempo      = $reversal['JatuhTempo'];
+        // $KodeRekening    = str_replace(".","",$reversal['KodeRekening']);
+        $Pokok = (int) $reversal['Pokok'];
+        $Denda = (int) $reversal['Denda'];
+        $Total = (int) $reversal['Total'];
         $Hasil = array(
               "Nop"   => $Nop,
               "Masa"  => $Masa,
+              // "JatuhTempo" => $JatuhTempo,
+              // "KodeRekening" => $KodeRekening,
               "Tahun" => $Tahun,
               "Pokok" => $Pokok,
               "Denda" => $Denda,
@@ -340,30 +345,30 @@ class api extends REST_Controller {
       $queryInq = $this->db->get_where('inquiry', array('Nop' => $HasilReversal['Nop']));
       foreach ($queryInq->result_array() as $reversalInq)
       {
-        $NopInq          = $reversalInq['Nop'];
-        $MasaInq         = $reversalInq['Masa'];
-        $TahunInq        = $reversalInq['Tahun'];
-		$LunasInq        = $reversalInq['Lunas'];
-        $JatuhTempoInq   = $reversalInq['JatuhTempo'];
-        $KodeRekeningInq = str_replace(".","",$reversalInq['KodeRekening']);
-        $PokokInq        = $reversalInq['Pokok'];
-        $DendaInq        = $reversalInq['Denda'];
-        $TotalInq        = $reversalInq['Total'];
-        $HasilInq        = array(
-                              "Nop"          => $NopInq,
-                              "Masa"         => $MasaInq,
-                              "JatuhTempo"   => $JatuhTempoInq,
-                              "KodeRekening" => $KodeRekeningInq,
-                              "Tahun"        => $TahunInq,
-                              "Pokok"        => $PokokInq,
-                              "Denda"        => $DendaInq,
-                              "Total"        => $TotalInq
+        $NopInq   = $reversalInq['Nop'];
+        $MasaInq  = $reversalInq['Masa'];
+        $TahunInq = $reversalInq['Tahun'];
+		$LunasInq = $reversalInq['Lunas'];
+        $JatuhTempoInq      = $reversalInq['JatuhTempo'];
+        $KodeRekeningInq    = str_replace(".","",$reversalInq['KodeRekening']);
+        $PokokInq = (int) $reversalInq['Pokok'];
+        $DendaInq = (int) $reversalInq['Denda'];
+        $TotalInq = (int) $reversalInq['Total'];
+        $HasilInq = array(
+              "Nop"   => $NopInq,
+              "Masa"  => $MasaInq,
+              "JatuhTempo" => $JatuhTempoInq,
+              "KodeRek" => $KodeRekeningInq,
+              "Tahun" => $TahunInq,
+              "Pokok" => $PokokInq,
+              "Denda" => $DendaInq,
+              "Total" => $TotalInq
         );
       }
 
       $nomor_skprd = substr($HasilReversal['Nop'], 13,5);
       $Data = array(
-                  "Pengesahan" => "",
+                  "Pengesahan" => null,
                   "Lunas"      => "0"
       );
 
@@ -379,11 +384,11 @@ class api extends REST_Controller {
                             "Masa"         => $HasilReversal['Masa'],
                             "Tahun"        => $HasilReversal['Tahun'],
                             "JatuhTempo"   => $reversalInq['JatuhTempo'],
-                            "KodeRekening" => str_replace(".","",$reversalInq['KodeRekening']),
+                            "KodeRek" => str_replace(".","",$reversalInq['KodeRekening']),
                             "Pokok"        => $HasilReversal['Pokok'],
                             "Denda"        => $HasilReversal['Denda'],
                             "Total"        => $HasilReversal['Total'],
-                            "Status"       => array(
+                            "Status" => array(  
                                                   "IsError"           => "False",
                                                   "ResponseCode"      => "00",
                                                   "ErrorDesc"         => "Sukses"
@@ -396,11 +401,11 @@ class api extends REST_Controller {
                             "Masa"         => $HasilReversal['Masa'],
                             "Tahun"        => $HasilReversal['Tahun'],
                             "JatuhTempo"   => $reversalInq['JatuhTempo'],
-                            "KodeRekening" => str_replace(".","",$reversalInq['KodeRekening']),
+                            "KodeRek" => str_replace(".","",$reversalInq['KodeRekening']),
                             "Pokok"        => $HasilReversal['Pokok'],
                             "Denda"        => $HasilReversal['Denda'],
                             "Total"        => $HasilReversal['Total'],
-                            "Status"       => array(
+                            "Status" => array(  
                                                   "IsError"           => "True",
                                                   "ResponseCode"      => "36",
                                                   "ErrorDesc"         => "Data reversal pernah dibatalkan"
@@ -413,11 +418,11 @@ class api extends REST_Controller {
                             "Masa"         => $HasilReversal['Masa'],
                             "Tahun"        => $HasilReversal['Tahun'],
                             "JatuhTempo"   => $reversalInq['JatuhTempo'],
-                            "KodeRekening" => str_replace(".","",$reversalInq['KodeRekening']),
+                            "KodeRek" => str_replace(".","",$reversalInq['KodeRekening']),
                             "Pokok"        => $HasilReversal['Pokok'],
                             "Denda"        => $HasilReversal['Denda'],
                             "Total"        => $HasilReversal['Total'],
-                            "Status"       => array(
+                              "Status" => array(  
                                                   "IsError"           => "True",
                                                   "ResponseCode"      => "34",
                                                   "ErrorDesc"         => "Data reversal tidak ditemukan" 
@@ -431,11 +436,11 @@ class api extends REST_Controller {
                             "Masa"         => $HasilReversal['Masa'],
                             "Tahun"        => $HasilReversal['Tahun'],
                             "JatuhTempo"   => $reversalInq['JatuhTempo'],
-                            "KodeRekening" => str_replace(".","",$reversalInq['KodeRekening']),
+                            "KodeRek" => str_replace(".","",$reversalInq['KodeRek']),
                             "Pokok"        => $HasilReversal['Pokok'],
                             "Denda"        => $HasilReversal['Denda'],
                             "Total"        => $HasilReversal['Total'],
-                            "Status"       => array(
+                              "Status" => array(  
                                                   "IsError"           => "True",
                                                   "ResponseCode"      => "99",
                                                   "ErrorDesc"         => "System Failure" 
